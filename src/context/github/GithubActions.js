@@ -1,6 +1,24 @@
 const GITHUB_URL = process.env.REACT_APP_GITHUB_URL;
 const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 
+// Get initial users (It was for testing purposes)
+// const fetchUsers = async () => {
+//   setLoading();
+
+//   const response = await fetch(`${GITHUB_URL}/users`, {
+//     headers: {
+//       Authorization: `token ${GITHUB_TOKEN}`,
+//     },
+//   });
+
+//   const data = await response.json();
+
+//   dispatch({
+//     type: 'GET_USERS',
+//     payload: data,
+//   });
+// };
+
 // Get search results
 export const searchUsers = async (text) => {
   const params = new URLSearchParams({

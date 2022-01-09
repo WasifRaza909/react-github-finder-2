@@ -4,10 +4,10 @@ import Spinner from '../components/layout/Spinner';
 import { useParams, Link } from 'react-router-dom';
 import GithubContext from '../context/github/GithubContext';
 import RepoList from '../components/repos/RepoList';
+import { getUser, getUserRepos } from '../context/github/GithubActions';
 
 function User() {
-  const { getUser, user, loading, getUserRepos, repos } =
-    useContext(GithubContext);
+  const { user, loading, repos, dispatch } = useContext(GithubContext);
 
   const params = useParams();
 
@@ -29,9 +29,25 @@ function User() {
   } = user;
 
   useEffect(() => {
-    getUser(params.login);
-    getUserRepos(params.login);
-  }, []);
+    dispatch({ type: 'SET_LOADING' });
+
+    // It is done because async don't work directly in useEffect
+    const getUserData = async () => {
+      const userData = await getUser(params.login);
+      dispatch({
+        type: 'GET_USER',
+        payload: userData,
+      });
+
+      const userRepoData = await getUserRepos(params.login);
+      dispatch({
+        type: 'GET_REPOS',
+        payload: userRepoData,
+      });
+    };
+
+    getUserData();
+  }, [dispatch, params.login]);
 
   if (loading) {
     return <Spinner />;
@@ -156,7 +172,7 @@ function User() {
 
           <div className="stat">
             <div className="stat-figure text-secondary">
-              <FaUsers className="text-3xl md:text-5xl" />
+              <FaStore className="text-3xl md:text-5xl" />
             </div>
 
             <div className="stat-title pr-5">Public Gists</div>
